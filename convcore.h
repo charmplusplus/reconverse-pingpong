@@ -20,7 +20,7 @@ typedef struct Header
 typedef struct CmiMessageStruct
 {
     CmiMessageHeader header;
-    char data[];
+    char* data;
 } CmiMessage;
 
 void CmiStartThreads(char **argv);
@@ -75,5 +75,9 @@ void CmiSyncBroadcastAll(int size, void *msg);
 void CmiSyncBroadcastAllAndFree(int size, void *msg);
 
 void CmiNodeBarrier(void);
+
+//node queue
+ConverseQueue<CmiMessage> *CmiGetNodeQueue();
+void CmiSyncNodeSendAndFree(unsigned int destNode, unsigned int size, void *msg);
 
 #endif

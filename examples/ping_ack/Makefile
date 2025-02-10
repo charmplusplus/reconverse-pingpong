@@ -1,30 +1,23 @@
--include ../../common.mk
-CHARMC=../../../../../bin/charmc $(OPTS)
+# Compiler and flags
+CXX := g++
+CXXFLAGS := -std=c++11 -pthread -I ../..
 
-OBJS = \
-  ping.o \
+# Source files
+SRCS := ping.c ../../convcore.C ../../scheduler.C ../../queue.C
+HDRS := ../../convcore.h ../../scheduler.h ../../queue.h ../../barrier.h
 
-all: pingack
+# Output executable
+TARGET := test
 
-pingack: $(OBJS)
-	$(CHARMC) -o pingack $(OBJS) -language converse++
+# Default target
+all: $(TARGET)
 
-ping.o: ping.c
-	$(CHARMC) ping.c -g
-	$(CHARMC) ping.c
+# Link the object files to create the executable
+$(TARGET): $(SRCS)
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 
+# Clean up build files
 clean:
-	rm -f core *.cpm.h
-	rm -f TAGS *.o
-	rm -f pingack
-	rm -f conv-host charmrun
+	rm -f $(TARGET)
 
-test: pingack
-	$(call run, ./pingack +p2 )
-
-smptest: pingack
-	$(call run, ./pingack +p2 ++ppn 2)
-	$(call run, ./pingack +p4 ++ppn 2)
-
-testp: pingack
-	$(call run, ./pingack +p$(P) )
+.PHONY: all clean
